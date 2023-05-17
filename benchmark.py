@@ -217,6 +217,9 @@ if cmd_args.jit:
 if cmd_args.precision == 'bfloat16':
     with torch.cpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
         evaluate()
+if cmd_args.precision == 'float16':
+    with torch.cpu.amp.autocast(enabled=True, dtype=torch.half):
+        evaluate()
 else:
     evaluate()
 
