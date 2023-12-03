@@ -29,6 +29,12 @@ def add_argument():
     parser.add_argument('--channels_last', type=int, default=1, help='use channels last format')
     parser.add_argument('--profile', action='store_true', help='Trigger profile on current topology.')
     parser.add_argument('--arch', type=str, help='model name.')
+    parser.add_argument("--compile", action='store_true', default=False,
+                    help="enable torch.compile")
+    parser.add_argument("--backend", type=str, default='inductor',
+                        help="enable torch.compile backend")
+    parser.add_argument("--device", type=str, default='cpu',
+                        help="cpu or cuda")
 
     args=parser.parse_args()
     return args
@@ -185,6 +191,9 @@ if cmd_args.channels_last:
         input, model = input_oob, model_oob
     except:
         print("Input NHWC failed! Use normal input.")
+
+if cmd_args.compile:
+        model = torch.compile(model, backend=cmd_args.backend, options={"freezing": True})
 
 model.eval()
 
