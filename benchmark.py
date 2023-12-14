@@ -224,10 +224,10 @@ if cmd_args.jit:
 
 # evaluate
 if cmd_args.precision == 'bfloat16':
-    with torch.cpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
+    with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.bfloat16):
         evaluate()
 if cmd_args.precision == 'float16':
-    with torch.cpu.amp.autocast(enabled=True, dtype=torch.half):
+    with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.half):
         evaluate()
 else:
     evaluate()
