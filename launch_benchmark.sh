@@ -13,6 +13,9 @@ function main {
     
     pip install -r ${workload_dir}/requirements.txt
     # pip install --no-deps torchvision -f https://download.pytorch.org/whl/torch_stable.html
+    if [ "${device}" == "cuda" ];then
+        addtion_options=${addtion_options}" --with-cuda "
+    fi
 
     # if multiple use 'xxx,xxx,xxx'
     model_name_list=($(echo "${model_name}" |sed 's/,/ /g'))
@@ -23,7 +26,7 @@ function main {
     do
         # cache weight
         python benchmark.py --arch Reformer --batch_size 1 --warmup 1 --max_iters 2 \
-            --precision ${precision} --channels_last ${channels_last}
+            --precision ${precision} --channels_last ${channels_last} ${addtion_options}
         #
         for batch_size in ${batch_size_list[@]}
         do
