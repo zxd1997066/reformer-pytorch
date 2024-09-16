@@ -35,7 +35,8 @@ def add_argument():
                         help="enable torch.compile backend")
     parser.add_argument("--device", type=str, default='cpu',
                         help="cpu or cuda")
-
+    parser.add_argument("--triton_cpu", action='store_true', default=False,
+                    help="enable triton_cpu")
     args=parser.parse_args()
     return args
 
@@ -181,6 +182,10 @@ def evaluate():
 # setup deepspeed
 cmd_args = add_argument()
 input = torch.randn(cmd_args.batch_size, 4096, 512)
+if cmd_args.triton_cpu:
+    print("run with triton cpu backend")
+    import torch._inductor.config
+    torch._inductor.config.cpu_backend="triton"
 if cmd_args.channels_last:
     try:
         input_oob, model_oob = input, model
